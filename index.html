@@ -1,0 +1,3290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Royalty – Learn Without Limits</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #111118;
+      --white: #1a1a24;
+      --gold: #c9a84c;
+      --gold-light: #3a2e14;
+      --gold-dark: #d4aa55;
+      --ink: #f0eee8;
+      --ink-soft: #b8b4ac;
+      --ink-muted: #6a6660;
+      --border: #2a2a36;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 72px;
+      background: rgba(17, 17, 24, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-dark);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-ghost {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-ghost:hover {
+      background: var(--border);
+    }
+
+    .btn-gold {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--gold-dark);
+      border: none;
+      cursor: pointer;
+      padding: 0.55rem 1.4rem;
+      border-radius: 6px;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-gold:hover {
+      background: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 5% 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(201, 168, 76, 0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(201, 168, 76, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 640px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gold-dark);
+      background: rgba(201, 168, 76, 0.1);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-dark);
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--gold-dark);
+      border: none;
+      cursor: pointer;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(160, 120, 48, 0.3);
+    }
+
+    .btn-outline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold-light);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+
+    .stat-item h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+    }
+
+    .stat-item p {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-visual {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      animation: fadeIn 1.2s 0.3s ease both;
+    }
+
+    .hero-card-stack {
+      position: relative;
+      height: 380px;
+    }
+
+    .hero-card {
+      position: absolute;
+      background: #1a1a24;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .hero-card:nth-child(1) {
+      width: 280px;
+      top: 0;
+      right: 0;
+      transform: rotate(3deg);
+    }
+
+    .hero-card:nth-child(2) {
+      width: 300px;
+      top: 60px;
+      right: 60px;
+      transform: rotate(-2deg);
+      z-index: 2;
+    }
+
+    .hero-card:nth-child(3) {
+      width: 260px;
+      top: 140px;
+      right: 20px;
+      transform: rotate(1.5deg);
+      z-index: 1;
+    }
+
+    .card-category {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .card-price {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--gold-dark);
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+    }
+
+    /* ── SECTIONS SHARED ── */
+    section {
+      padding: 100px 5%;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold-dark);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ink);
+      max-width: 520px;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--gold-dark);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      background: var(--white);
+    }
+
+    .how-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .how-header .section-title {
+      max-width: 100%;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .step:hover {
+      border-color: var(--gold-light);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .step h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    /* ── CLASSES ── */
+    .classes-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      background: none;
+      border: 1.5px solid var(--border);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-tab.active,
+    .filter-tab:hover {
+      color: var(--gold-dark);
+      border-color: var(--gold-light);
+      background: rgba(201, 168, 76, 0.07);
+    }
+
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .class-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .class-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .class-thumb {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+
+    .class-thumb-1 {
+      background: linear-gradient(135deg, #2a2210, #3a3018);
+    }
+
+    .class-thumb-2 {
+      background: linear-gradient(135deg, #102030, #183040);
+    }
+
+    .class-thumb-3 {
+      background: linear-gradient(135deg, #2a1510, #3a2018);
+    }
+
+    .class-thumb-4 {
+      background: linear-gradient(135deg, #102210, #183018);
+    }
+
+    .class-thumb-5 {
+      background: linear-gradient(135deg, #1a1030, #251540);
+    }
+
+    .class-thumb-6 {
+      background: linear-gradient(135deg, #2a1810, #3a2215);
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--white);
+      background: #e05a4e;
+      padding: 0.25rem 0.6rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--white);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .class-body {
+      padding: 1.4rem;
+    }
+
+    .class-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .class-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .class-instructor {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      margin-bottom: 1rem;
+    }
+
+    .class-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .class-price {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .class-price span {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      font-weight: 400;
+    }
+
+    .class-enroll {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gold-dark);
+      background: rgba(201, 168, 76, 0.1);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .class-enroll:hover {
+      background: var(--gold-dark);
+      color: var(--white);
+    }
+
+    .class-id-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.35rem 0.65rem;
+    }
+
+    .class-id-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+    }
+
+    .class-id-code {
+      font-family: 'DM Sans', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.06em;
+      flex: 1;
+    }
+
+    .class-id-copy {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+      line-height: 1;
+    }
+
+    .class-id-copy:hover {
+      color: var(--gold-dark);
+      background: rgba(201, 168, 76, 0.1);
+    }
+
+    /* ── TEACH ── */
+    .teach {
+      background: #0d0d14;
+      color: var(--white);
+      border-radius: 32px;
+      margin: 0 3%;
+      padding: 80px 5%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .teach-content .section-label {
+      color: var(--gold-light);
+    }
+
+    .teach-content .section-title {
+      color: var(--white);
+      max-width: 100%;
+    }
+
+    .teach-content .section-title em {
+      color: var(--gold-light);
+    }
+
+    .teach-content p {
+      color: rgba(255, 255, 255, 0.65);
+      margin: 1.5rem 0 2rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .teach-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .teach-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(201, 168, 76, 0.15);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .teach-feature h4 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      color: var(--white);
+    }
+
+    .teach-feature p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin: 0;
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials {
+      background: var(--white);
+    }
+
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .testimonials-header .section-title {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .author-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--white);
+    }
+
+    .author-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .author-role {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    /* ── PRICING ── */
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .pricing-header .section-title {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem;
+      border: 1.5px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(160deg, #1e1a0e, var(--white));
+      position: relative;
+    }
+
+    .popular-tag {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white);
+      background: var(--gold-dark);
+      padding: 0.3rem 1rem;
+      border-radius: 100px;
+    }
+
+    .plan-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1;
+      margin: 1rem 0 0.25rem;
+    }
+
+    .plan-price sup {
+      font-size: 1.2rem;
+      vertical-align: super;
+    }
+
+    .plan-price sub {
+      font-size: 1rem;
+      color: var(--ink-muted);
+    }
+
+    .plan-desc {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .plan-features li {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .plan-features li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.65rem;
+    }
+
+    .btn-plan {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--ink);
+      transition: all 0.2s;
+    }
+
+    .btn-plan:hover {
+      border-color: var(--gold-light);
+      background: rgba(201, 168, 76, 0.07);
+    }
+
+    .btn-plan.gold {
+      background: var(--gold-dark);
+      border-color: var(--gold-dark);
+      color: var(--white);
+    }
+
+    .btn-plan.gold:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      text-align: center;
+      padding: 100px 5%;
+      background: var(--white);
+    }
+
+    .cta-banner .section-label {
+      justify-content: center;
+      display: block;
+    }
+
+    .cta-banner .section-title {
+      max-width: 100%;
+      margin: 0 auto 1.5rem;
+    }
+
+    .cta-banner p {
+      color: var(--ink-soft);
+      max-width: 440px;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0d0d14;
+      color: var(--ink);
+      padding: 60px 5% 40px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand .nav-logo {
+      color: var(--white);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-col ul li a {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--gold-light);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-bottom p {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(26, 22, 18, 0.5);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #1a1a24;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 440px;
+      margin: 1rem;
+      position: relative;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--ink-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--border);
+    }
+
+    .modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal p {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+      margin-bottom: 2rem;
+    }
+
+    .tab-switch {
+      display: flex;
+      background: #111118;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 1.75rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--ink-muted);
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #2a2a36;
+      color: var(--ink);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: #111118;
+      border: 1.5px solid var(--border);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--gold);
+    }
+
+    .form-footer {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .form-footer a {
+      color: var(--gold-dark);
+      text-decoration: none;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .hero-visual {
+        display: none;
+      }
+
+      .teach {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hero {
+        padding-top: 100px;
+      }
+
+      .hero-stats {
+        gap: 2rem;
+      }
+
+      .teach {
+        border-radius: 20px;
+        margin: 0 2%;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 0 4%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Royalty<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#classes">Browse Classes</a></li>
+      <li><a href="#teach">Teach</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openModal('login')">Log in</button>
+      <a href="#" class="btn-gold" onclick="openModal('signup'); return false;">Get Started</a>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">✦ The Premium Learning Platform</div>
+      <h1>Learn from the<br /><em>finest minds</em><br />anywhere.</h1>
+      <p>Royalty connects passionate learners with world-class instructors across every discipline — all in one
+        beautifully designed platform.</p>
+      <div class="hero-cta">
+        <a href="#classes" class="btn-primary">Explore Classes</a>
+        <a href="#teach" class="btn-outline">Start Teaching</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <h3>12K+</h3>
+          <p>Students</p>
+        </div>
+        <div class="stat-item">
+          <h3>480+</h3>
+          <p>Classes</p>
+        </div>
+        <div class="stat-item">
+          <h3>200+</h3>
+          <p>Instructors</p>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="hero-card">
+          <div class="card-category">Photography</div>
+          <div class="card-title">The Art of Natural Light</div>
+          <div class="card-meta">
+            <div class="avatar">AK</div>
+            <span>Anna Kim · 1.2k enrolled</span>
+          </div>
+          <div class="card-price">$49</div>
+        </div>
+        <div class="hero-card">
+          <div class="card-category">Music</div>
+          <div class="card-title">Piano for Adults: From Zero</div>
+          <div class="card-meta">
+            <div class="avatar">MR</div>
+            <span>Marcus Reed · 3.4k enrolled</span>
+          </div>
+          <div class="card-price">$65</div>
+        </div>
+        <div class="hero-card">
+          <div class="card-category">Business</div>
+          <div class="card-title">Brand Strategy Masterclass</div>
+          <div class="card-meta">
+            <div class="avatar">SL</div>
+            <span>Sofia Liu · 890 enrolled</span>
+          </div>
+          <div class="card-price">$79</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="about">
+    <div class="how-header">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Simple by design,<br /><em>powerful</em> in practice</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Browse & Discover</h3>
+        <p>Explore hundreds of live and on-demand classes across every topic, curated by our editorial team.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Enroll Instantly</h3>
+        <p>Join a class in seconds. One-time or subscription — flexible options to fit your lifestyle.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Learn & Connect</h3>
+        <p>Attend live sessions, rewatch recordings, and engage with your instructor and peers.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Grow & Achieve</h3>
+        <p>Track your progress, earn certificates, and build skills that last a lifetime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSES -->
+  <section id="classes">
+    <div class="classes-header">
+      <div>
+        <div class="section-label">Featured Classes</div>
+        <h2 class="section-title">Explore what's <em>trending</em></h2>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setFilter(this)">All</button>
+        <button class="filter-tab" onclick="setFilter(this)">Live</button>
+        <button class="filter-tab" onclick="setFilter(this)">Arts</button>
+        <button class="filter-tab" onclick="setFilter(this)">Business</button>
+        <button class="filter-tab" onclick="setFilter(this)">Tech</button>
+        <button class="filter-tab" onclick="setFilter(this)">Wellness</button>
+      </div>
+    </div>
+    <!-- Join by Code bar -->
+    <div
+      style="display:flex; align-items:center; gap:0.75rem; margin-bottom:2.5rem; background:#1a1a24; border:1.5px solid var(--border); border-radius:12px; padding:0.75rem 1rem; max-width:480px;">
+      <span style="font-size:1.1rem;">🔑</span>
+      <input id="join-code-input" type="text" placeholder="Enter Class ID to join  e.g. RYL-4821" maxlength="10"
+        style="flex:1; font-family:'DM Sans',sans-serif; font-size:0.9rem; border:none; outline:none; background:transparent; color:var(--ink);"
+        onkeydown="if(event.key==='Enter') joinByCode()" />
+      <button onclick="joinByCode()" class="btn-gold"
+        style="font-size:0.82rem; padding:0.45rem 1.1rem; white-space:nowrap;">Join Class</button>
+    </div>
+
+    <div class="classes-grid">
+      <!-- Card 1 – LIVE -->
+      <div class="class-card" data-id="RYL-4821" data-live="true">
+        <div class="class-thumb class-thumb-1">
+          🎨
+          <div class="live-badge">
+            <div class="live-dot"></div> Live
+          </div>
+        </div>
+        <div class="class-body">
+          <div class="class-tag">Arts & Design</div>
+          <div class="class-name">Watercolour Landscapes for Beginners</div>
+          <div class="class-instructor">by Elena Vasquez</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-4821</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-4821', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$39 <span>/ session</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-4821')">Join Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="class-card" data-id="RYL-2073">
+        <div class="class-thumb class-thumb-2">🧠</div>
+        <div class="class-body">
+          <div class="class-tag">Tech</div>
+          <div class="class-name">Introduction to Machine Learning with Python</div>
+          <div class="class-instructor">by David Chen</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-2073</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-2073', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$89 <span>/ course</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-2073')">Enroll</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 – LIVE -->
+      <div class="class-card" data-id="RYL-6504" data-live="true">
+        <div class="class-thumb class-thumb-3">
+          🎤
+          <div class="live-badge">
+            <div class="live-dot"></div> Live
+          </div>
+        </div>
+        <div class="class-body">
+          <div class="class-tag">Performance</div>
+          <div class="class-name">Public Speaking: Command Any Room</div>
+          <div class="class-instructor">by James Owusu</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-6504</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-6504', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$55 <span>/ session</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-6504')">Join Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="class-card" data-id="RYL-3318">
+        <div class="class-thumb class-thumb-4">🌿</div>
+        <div class="class-body">
+          <div class="class-tag">Wellness</div>
+          <div class="class-name">Mindful Yoga for Modern Life</div>
+          <div class="class-instructor">by Priya Nair</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-3318</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-3318', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$25 <span>/ session</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-3318')">Enroll</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="class-card" data-id="RYL-9150">
+        <div class="class-thumb class-thumb-5">📈</div>
+        <div class="class-body">
+          <div class="class-tag">Business</div>
+          <div class="class-name">Financial Freedom: Investing 101</div>
+          <div class="class-instructor">by Rachel Moore</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-9150</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-9150', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$69 <span>/ course</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-9150')">Enroll</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 – LIVE -->
+      <div class="class-card" data-id="RYL-7762" data-live="true">
+        <div class="class-thumb class-thumb-6">
+          🎸
+          <div class="live-badge">
+            <div class="live-dot"></div> Live
+          </div>
+        </div>
+        <div class="class-body">
+          <div class="class-tag">Music</div>
+          <div class="class-name">Guitar from Scratch: Chords & Songs</div>
+          <div class="class-instructor">by Tom Hargreaves</div>
+          <div class="class-id-row">
+            <span class="class-id-label">Class ID</span>
+            <span class="class-id-code">RYL-7762</span>
+            <button class="class-id-copy" onclick="copyClassId('RYL-7762', event)" title="Copy ID">⧉</button>
+          </div>
+          <div class="class-footer">
+            <div class="class-price">$45 <span>/ session</span></div>
+            <button class="class-enroll" onclick="openLessonPage('RYL-7762')">Join Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACH -->
+  <section id="teach" style="background: transparent; padding: 60px 0;">
+    <div class="teach">
+      <div class="teach-content">
+        <div class="section-label">For Instructors</div>
+        <h2 class="section-title">Share your expertise.<br />Build your <em>empire.</em></h2>
+        <p>Whether you're a seasoned professional or a passionate enthusiast, Royalty gives you the tools to create,
+          promote, and monetise your classes with ease.</p>
+        <a href="#" class="btn-primary" onclick="openModal('signup'); return false;">Start Teaching Free</a>
+      </div>
+      <div class="teach-features">
+        <div class="teach-feature">
+          <div class="feature-icon">🎥</div>
+          <div>
+            <h4>Powerful Live Tools</h4>
+            <p>HD video, interactive whiteboards, screen sharing, and breakout rooms built in.</p>
+          </div>
+        </div>
+        <div class="teach-feature">
+          <div class="feature-icon">💸</div>
+          <div>
+            <h4>Flexible Monetisation</h4>
+            <p>Set your own prices. One-time, subscription, or pay-what-you-can models.</p>
+          </div>
+        </div>
+        <div class="teach-feature">
+          <div class="feature-icon">📊</div>
+          <div>
+            <h4>Analytics Dashboard</h4>
+            <p>Track enrollments, earnings, student engagement, and class performance in real time.</p>
+          </div>
+        </div>
+        <div class="teach-feature">
+          <div class="feature-icon">🌍</div>
+          <div>
+            <h4>Global Reach</h4>
+            <p>Reach students worldwide with built-in discovery, SEO, and promotion tools.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="testimonials-header">
+      <div class="section-label">Student Stories</div>
+      <h2 class="section-title">What our community <em>says</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Royalty completely changed how I learn. The instructors are incredible and the
+          platform feels like it was made for serious learners."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: linear-gradient(135deg, #c9a84c, #a07830);">NS</div>
+          <div>
+            <div class="author-name">Naomi S.</div>
+            <div class="author-role">Enrolled in 4 classes</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I launched my piano course here six months ago and already have over 800 students.
+          The tools they give instructors are genuinely world-class."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: linear-gradient(135deg, #7ab8c9, #4a8090);">MR</div>
+          <div>
+            <div class="author-name">Marcus R.</div>
+            <div class="author-role">Instructor — Music</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I've tried every learning platform out there. Royalty is the only one that actually
+          feels premium — from the design to the quality of teachers."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: linear-gradient(135deg, #c97ab8, #904a80);">AK</div>
+          <div>
+            <div class="author-name">Aisha K.</div>
+            <div class="author-role">Enrolled in 7 classes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="pricing-header">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, <em>honest</em> pricing</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
+        <div class="plan-desc">Perfect for exploring</div>
+        <ul class="plan-features">
+          <li>Access to free classes</li>
+          <li>1 live class per month</li>
+          <li>Community forums</li>
+          <li>Basic progress tracking</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('signup')">Get Started Free</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="popular-tag">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><sup>$</sup>29<sub>/mo</sub></div>
+        <div class="plan-desc">For dedicated learners</div>
+        <ul class="plan-features">
+          <li>Unlimited class access</li>
+          <li>Unlimited live sessions</li>
+          <li>Downloadable resources</li>
+          <li>Certificates of completion</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="btn-plan gold" onclick="openModal('signup')">Start Pro</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Instructor</div>
+        <div class="plan-price"><sup>$</sup>49<sub>/mo</sub></div>
+        <div class="plan-desc">For teachers & creators</div>
+        <ul class="plan-features">
+          <li>Everything in Pro</li>
+          <li>Host unlimited classes</li>
+          <li>Analytics dashboard</li>
+          <li>Custom class pages</li>
+          <li>Revenue tools & payouts</li>
+        </ul>
+        <button class="btn-plan" onclick="openModal('signup')">Start Teaching</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="section-label">Ready?</div>
+    <h2 class="section-title">Your next chapter<br />starts <em>today.</em></h2>
+    <p>Join thousands of learners and instructors who chose Royalty as their home for growth.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-primary" onclick="openModal('signup'); return false;">Create Free Account</a>
+      <a href="#classes" class="btn-outline">Browse Classes</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">Royalty<span style="color:var(--gold)">.</span></a>
+        <p>The premium platform for live and on-demand learning — connecting the world's best instructors with
+          passionate students everywhere.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="#">Browse Classes</a></li>
+          <li><a href="#">Live Sessions</a></li>
+          <li><a href="#">Certificates</a></li>
+          <li><a href="#">Student Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Teach</h4>
+        <ul>
+          <li><a href="#">Become an Instructor</a></li>
+          <li><a href="#">Instructor Resources</a></li>
+          <li><a href="#">Pricing & Payouts</a></li>
+          <li><a href="#">Success Stories</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Royalty. All rights reserved.</p>
+      <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem;">Made with care ✦</p>
+    </div>
+  </footer>
+
+  <!-- LESSON VIEW PAGE -->
+  <div id="lesson-page"
+    style="display:none; position:fixed; inset:0; z-index:150; background:#111118; overflow-y:auto;">
+    <style>
+      .lesson-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        height: 64px;
+        background: #1a1a24;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .lesson-nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.4rem 0.75rem;
+        border-radius: 6px;
+        transition: background 0.2s;
+      }
+
+      .back-btn:hover {
+        background: var(--border);
+      }
+
+      .lesson-title-nav {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .lesson-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 0;
+        min-height: calc(100vh - 64px);
+      }
+
+      .lesson-main {
+        padding: 2rem 3% 2rem 5%;
+      }
+
+      /* Video area */
+      .video-wrap {
+        background: #111;
+        border-radius: 16px;
+        aspect-ratio: 16/9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+
+      .video-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .video-placeholder .big-icon {
+        font-size: 3rem;
+      }
+
+      .video-placeholder p {
+        font-size: 0.85rem;
+      }
+
+      .live-pill {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #fff;
+        background: #e05a4e;
+        padding: 0.3rem 0.75rem;
+        border-radius: 100px;
+      }
+
+      .video-controls {
+        position: absolute;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .vc-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+
+      .vc-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      .vc-btn.active {
+        background: var(--gold-dark);
+        border-color: var(--gold-dark);
+      }
+
+      .lesson-info h2 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+      }
+
+      .lesson-info-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        font-size: 0.82rem;
+        color: var(--ink-muted);
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .instructor-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .chip-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      /* Tabs */
+      .lesson-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1.5px solid var(--border);
+        margin-bottom: 1.5rem;
+      }
+
+      .lesson-tab {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--ink-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1.5px;
+        transition: color 0.2s, border-color 0.2s;
+      }
+
+      .lesson-tab.active {
+        color: var(--gold-dark);
+        border-bottom-color: var(--gold-dark);
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      .lesson-desc {
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+        line-height: 1.8;
+      }
+
+      /* AI Transcription Panel (right sidebar) */
+      .transcription-panel {
+        border-left: 1px solid var(--border);
+        background: #1a1a24;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 64px);
+        position: sticky;
+        top: 64px;
+      }
+
+      .trans-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .trans-header-left h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .trans-header-left p {
+        font-size: 0.75rem;
+        color: var(--ink-muted);
+        margin-top: 0.1rem;
+      }
+
+      .trans-status {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 0.3rem 0.7rem;
+        border-radius: 100px;
+      }
+
+      .trans-status.idle {
+        color: var(--ink-muted);
+        background: var(--border);
+      }
+
+      .trans-status.listening {
+        color: #4ade80;
+        background: rgba(74, 222, 128, 0.12);
+      }
+
+      .trans-status.processing {
+        color: var(--gold-dark);
+        background: rgba(201, 168, 76, 0.12);
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .status-dot.pulse {
+        animation: pulse 1.2s infinite;
+      }
+
+      .trans-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .trans-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--ink-muted);
+        text-align: center;
+        gap: 0.75rem;
+      }
+
+      .trans-empty .empty-icon {
+        font-size: 2.5rem;
+        opacity: 0.4;
+      }
+
+      .trans-empty p {
+        font-size: 0.85rem;
+        max-width: 200px;
+        line-height: 1.5;
+      }
+
+      .trans-entry {
+        background: var(--cream);
+        border-radius: 10px;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--border);
+        animation: fadeUp 0.3s ease;
+      }
+
+      .trans-entry.interim {
+        background: rgba(201, 168, 76, 0.06);
+        border-color: rgba(201, 168, 76, 0.2);
+        opacity: 0.75;
+      }
+
+      .trans-time {
+        font-size: 0.7rem;
+        color: var(--ink-muted);
+        margin-bottom: 0.35rem;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+      }
+
+      .trans-text {
+        font-size: 0.88rem;
+        color: var(--ink-soft);
+        line-height: 1.6;
+      }
+
+      .trans-interim-bar {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(201, 168, 76, 0.06);
+        border: 1px dashed rgba(201, 168, 76, 0.3);
+        border-radius: 8px;
+        font-size: 0.82rem;
+        color: var(--gold-dark);
+        font-style: italic;
+      }
+
+      .trans-footer {
+        padding: 1.25rem 1.5rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .mic-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .mic-btn.start {
+        background: var(--gold-dark);
+        color: #fff;
+      }
+
+      .mic-btn.start:hover {
+        background: var(--gold);
+      }
+
+      .mic-btn.stop {
+        background: rgba(192, 57, 43, 0.15);
+        color: #f87171;
+        border: 1.5px solid rgba(192, 57, 43, 0.3);
+        animation: micPulse 2s infinite;
+      }
+
+      @keyframes micPulse {
+
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.15);
+        }
+
+        50% {
+          box-shadow: 0 0 0 8px rgba(192, 57, 43, 0);
+        }
+      }
+
+      .trans-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .trans-action-btn {
+        flex: 1;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--ink-soft);
+        background: var(--cream);
+        border: 1px solid var(--border);
+        padding: 0.5rem;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .trans-action-btn:hover {
+        border-color: var(--gold-light);
+        color: var(--gold-dark);
+      }
+
+      .trans-lang-select {
+        width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.8rem;
+        color: var(--ink-soft);
+        background: var(--cream);
+        border: 1px solid var(--border);
+        padding: 0.5rem 0.75rem;
+        border-radius: 7px;
+        outline: none;
+        cursor: pointer;
+        -webkit-appearance: none;
+      }
+
+      .no-support-msg {
+        font-size: 0.8rem;
+        color: #f87171;
+        background: rgba(192, 57, 43, 0.12);
+        border: 1px solid rgba(192, 57, 43, 0.25);
+        padding: 0.6rem 0.9rem;
+        border-radius: 7px;
+        text-align: center;
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .lesson-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .transcription-panel {
+          height: auto;
+          position: static;
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+
+        .trans-body {
+          max-height: 320px;
+        }
+      }
+    </style>
+
+    <!-- Lesson Nav -->
+    <div class="lesson-nav">
+      <div class="lesson-nav-left">
+        <button class="back-btn" onclick="closeLessonPage()">← Back</button>
+        <div class="lesson-title-nav" id="lesson-nav-title">Watercolour Landscapes for Beginners</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div
+          style="display:flex; align-items:center; gap:0.4rem; background:#111118; border:1px solid var(--border); border-radius:8px; padding:0.3rem 0.75rem; font-size:0.78rem;">
+          <span
+            style="color:var(--ink-muted); font-size:0.7rem; text-transform:uppercase; letter-spacing:.06em;">ID</span>
+          <span id="lesson-id-display" style="font-weight:700; letter-spacing:.08em; color:var(--ink);">RYL-4821</span>
+          <button onclick="copyClassId(document.getElementById('lesson-id-display').textContent, event)"
+            style="background:none;border:none;cursor:pointer;font-size:0.85rem;color:var(--ink-muted);padding:0;"
+            title="Copy ID">⧉</button>
+        </div>
+        <div class="live-pill">
+          <div class="live-dot"></div> Live Now
+        </div>
+        <button onclick="shareClassId()" class="btn-gold" style="font-size:0.8rem; padding:0.4rem 1rem;">Share
+          ID</button>
+      </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="lesson-layout">
+
+      <!-- Main -->
+      <div class="lesson-main">
+        <!-- Video — Jitsi Meet live room -->
+        <div class="video-wrap"
+          style="aspect-ratio:16/9; min-height:320px; background:#111; border-radius:16px; overflow:hidden; position:relative; margin-bottom:1.5rem;">
+          <div id="jitsi-placeholder"
+            style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:1rem; color:rgba(255,255,255,0.5);">
+            <div style="font-size:2.5rem;">🎥</div>
+            <p style="font-size:0.85rem;">Starting video room…</p>
+          </div>
+          <iframe id="jitsi-frame"
+            style="display:none; width:100%; height:100%; border:none; position:absolute; inset:0;"
+            allow="camera; microphone; display-capture; fullscreen; autoplay" allowfullscreen>
+          </iframe>
+          <div class="live-pill" style="position:absolute; top:14px; left:14px; z-index:5;">
+            <div class="live-dot"></div> LIVE
+          </div>
+          <button onclick="closeLessonPage()"
+            style="position:absolute; top:14px; right:14px; z-index:5; background:rgba(220,50,50,0.75); border:none; color:#fff; border-radius:8px; padding:0.35rem 0.85rem; font-size:0.8rem; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500;">Leave
+            ✕</button>
+        </div>
+
+        <!-- Info -->
+        <div class="lesson-info">
+          <h2>Watercolour Landscapes for Beginners</h2>
+          <div class="lesson-info-meta">
+            <div class="instructor-chip">
+              <div class="chip-avatar">EV</div>
+              <span>Elena Vasquez</span>
+            </div>
+            <span>📅 Live · Session 3 of 8</span>
+            <span>👥 142 attending</span>
+            <span>⭐ 4.9</span>
+          </div>
+
+          <!-- Tabs -->
+          <div class="lesson-tabs">
+            <button class="lesson-tab active" onclick="switchLessonTab('overview', this)">Overview</button>
+            <button class="lesson-tab" onclick="switchLessonTab('whiteboard', this)">🖊 Whiteboard</button>
+            <button class="lesson-tab" onclick="switchLessonTab('notes', this)">My Notes</button>
+            <button class="lesson-tab" onclick="switchLessonTab('resources', this)">Resources</button>
+          </div>
+
+          <div id="lt-overview" class="tab-panel active">
+            <p class="lesson-desc">In today's session, we'll explore how to paint rolling countryside landscapes using
+              wet-on-wet watercolour techniques. Elena will walk through colour mixing, horizon line composition, and
+              how to paint believable skies and fields. Bring your full palette and 140lb cold press paper.</p>
+            <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+              <div
+                style="background:#111118; border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; flex:1; min-width:160px;">
+                <div
+                  style="font-size:0.72rem; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.3rem;">
+                  Duration</div>
+                <div style="font-weight:500;">90 minutes</div>
+              </div>
+              <div
+                style="background:#111118; border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; flex:1; min-width:160px;">
+                <div
+                  style="font-size:0.72rem; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.3rem;">
+                  Level</div>
+                <div style="font-weight:500;">Beginner</div>
+              </div>
+              <div
+                style="background:#111118; border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; flex:1; min-width:160px;">
+                <div
+                  style="font-size:0.72rem; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.3rem;">
+                  Language</div>
+                <div style="font-weight:500;">English</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="lt-whiteboard" class="tab-panel">
+            <style>
+              .wb-wrap {
+                background: #1a1a24;
+                border: 1.5px solid var(--border);
+                border-radius: 14px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+              }
+
+              .wb-toolbar {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.65rem 1rem;
+                background: #111118;
+                border-bottom: 1px solid var(--border);
+                flex-wrap: wrap;
+              }
+
+              .wb-sep {
+                width: 1px;
+                height: 24px;
+                background: var(--border);
+                margin: 0 0.25rem;
+              }
+
+              .wb-tool-btn {
+                font-family: 'DM Sans', sans-serif;
+                font-size: 0.78rem;
+                font-weight: 500;
+                color: var(--ink-soft);
+                background: none;
+                border: 1.5px solid transparent;
+                padding: 0.35rem 0.7rem;
+                border-radius: 7px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+                transition: all 0.15s;
+                white-space: nowrap;
+              }
+
+              .wb-tool-btn:hover {
+                background: #2a2a36;
+                border-color: var(--border);
+              }
+
+              .wb-tool-btn.active {
+                background: #2a2a36;
+                border-color: var(--gold-light);
+                color: var(--gold-dark);
+              }
+
+              .wb-color-swatch {
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                border: 2px solid transparent;
+                cursor: pointer;
+                transition: transform 0.15s, border-color 0.15s;
+                flex-shrink: 0;
+              }
+
+              .wb-color-swatch:hover {
+                transform: scale(1.2);
+              }
+
+              .wb-color-swatch.active {
+                border-color: var(--ink);
+                transform: scale(1.15);
+              }
+
+              .wb-size-btn {
+                width: 28px;
+                height: 28px;
+                border-radius: 6px;
+                border: 1.5px solid var(--border);
+                background: #2a2a36;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: border-color 0.15s;
+              }
+
+              .wb-size-btn:hover,
+              .wb-size-btn.active {
+                border-color: var(--gold);
+              }
+
+              .wb-size-dot {
+                border-radius: 50%;
+                background: var(--ink);
+              }
+
+              .wb-body {
+                position: relative;
+              }
+
+              #wb-canvas {
+                display: block;
+                width: 100%;
+                height: 420px;
+                cursor: crosshair;
+                touch-action: none;
+              }
+
+              #wb-text-layer {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                overflow: hidden;
+              }
+
+              .wb-text-input-wrap {
+                position: absolute;
+                display: none;
+              }
+
+              .wb-text-input-wrap.visible {
+                display: block;
+              }
+
+              #wb-text-input {
+                font-family: 'DM Sans', sans-serif;
+                font-size: 1rem;
+                color: #1a1612;
+                background: rgba(255, 255, 255, 0.92);
+                border: 1.5px dashed var(--gold);
+                border-radius: 4px;
+                padding: 4px 8px;
+                outline: none;
+                min-width: 120px;
+                max-width: 400px;
+                resize: none;
+                overflow: hidden;
+              }
+
+              .wb-status-bar {
+                padding: 0.4rem 1rem;
+                border-top: 1px solid var(--border);
+                font-size: 0.72rem;
+                color: var(--ink-muted);
+                display: flex;
+                justify-content: space-between;
+                background: #111118;
+              }
+            </style>
+
+            <div class="wb-wrap">
+              <!-- Toolbar -->
+              <div class="wb-toolbar">
+                <!-- Mode -->
+                <button class="wb-tool-btn active" id="wb-btn-draw" onclick="setWbMode('draw', this)" title="Draw">✏️
+                  Draw</button>
+                <button class="wb-tool-btn" id="wb-btn-text" onclick="setWbMode('text', this)" title="Add text">T
+                  Text</button>
+                <button class="wb-tool-btn" id="wb-btn-erase" onclick="setWbMode('erase', this)" title="Eraser">⊘
+                  Erase</button>
+                <div class="wb-sep"></div>
+                <!-- Colors -->
+                <div class="wb-color-swatch active" style="background:#f0eee8; border:1px solid #444;"
+                  onclick="setWbColor('#f0eee8', this)" title="White"></div>
+                <div class="wb-color-swatch" style="background:#d4aa55;" onclick="setWbColor('#d4aa55', this)"
+                  title="Gold"></div>
+                <div class="wb-color-swatch" style="background:#60a5fa;" onclick="setWbColor('#60a5fa', this)"
+                  title="Blue"></div>
+                <div class="wb-color-swatch" style="background:#f87171;" onclick="setWbColor('#f87171', this)"
+                  title="Red"></div>
+                <div class="wb-color-swatch" style="background:#4ade80;" onclick="setWbColor('#4ade80', this)"
+                  title="Green"></div>
+                <div class="wb-color-swatch" style="background:#c084fc;" onclick="setWbColor('#c084fc', this)"
+                  title="Purple"></div>
+                <div class="wb-sep"></div>
+                <!-- Sizes -->
+                <button class="wb-size-btn active" id="wb-sz-sm" onclick="setWbSize(2, this)">
+                  <div class="wb-size-dot" style="width:4px;height:4px;"></div>
+                </button>
+                <button class="wb-size-btn" id="wb-sz-md" onclick="setWbSize(5, this)">
+                  <div class="wb-size-dot" style="width:8px;height:8px;"></div>
+                </button>
+                <button class="wb-size-btn" id="wb-sz-lg" onclick="setWbSize(12, this)">
+                  <div class="wb-size-dot" style="width:14px;height:14px;"></div>
+                </button>
+                <div class="wb-sep"></div>
+                <!-- Actions -->
+                <button class="wb-tool-btn" onclick="wbUndo()">↩ Undo</button>
+                <button class="wb-tool-btn" onclick="wbClear()">🗑 Clear</button>
+                <button class="wb-tool-btn" onclick="wbDownload()">⬇ Save</button>
+              </div>
+
+              <!-- Canvas -->
+              <div class="wb-body">
+                <canvas id="wb-canvas"></canvas>
+                <div id="wb-text-layer">
+                  <div class="wb-text-input-wrap" id="wb-text-input-wrap">
+                    <textarea id="wb-text-input" rows="1" placeholder="Type here…" oninput="autoResizeWbText(this)"
+                      onkeydown="wbTextKeydown(event)"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="wb-status-bar">
+                <span id="wb-mode-label">Mode: Draw</span>
+                <span>Click canvas to draw · Switch to Text to type anywhere</span>
+              </div>
+            </div>
+          </div>
+          <textarea id="student-notes" placeholder="Type your notes here…"
+            style="width:100%; min-height:180px; font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--ink); background:#111118; border:1.5px solid var(--border); border-radius:10px; padding:1rem; outline:none; resize:vertical; line-height:1.7;"></textarea>
+          <button onclick="copyNotes()" class="trans-action-btn"
+            style="margin-top:0.5rem; width:auto; padding:0.5rem 1.2rem;">📋 Copy Notes</button>
+        </div>
+
+        <div id="lt-resources" class="tab-panel">
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; background:#111118; border:1px solid var(--border); border-radius:10px; padding:0.9rem 1.1rem;">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:1.2rem;">📄</span>
+                <div>
+                  <div style="font-size:0.88rem; font-weight:500;">Session 3 Worksheet</div>
+                  <div style="font-size:0.75rem; color:var(--ink-muted);">PDF · 1.2 MB</div>
+                </div>
+              </div>
+              <button class="trans-action-btn" style="width:auto; padding:.4rem .9rem;">Download</button>
+            </div>
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; background:#111118; border:1px solid var(--border); border-radius:10px; padding:0.9rem 1.1rem;">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:1.2rem;">🎨</span>
+                <div>
+                  <div style="font-size:0.88rem; font-weight:500;">Colour Reference Chart</div>
+                  <div style="font-size:0.75rem; color:var(--ink-muted);">PNG · 840 KB</div>
+                </div>
+              </div>
+              <button class="trans-action-btn" style="width:auto; padding:.4rem .9rem;">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transcription Sidebar -->
+    <div class="transcription-panel">
+      <div class="trans-header">
+        <div class="trans-header-left">
+          <h3>AI Transcription</h3>
+          <p>Live speech-to-text</p>
+        </div>
+        <div class="trans-status idle" id="trans-status">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Idle</span>
+        </div>
+      </div>
+
+      <div class="trans-body" id="trans-body">
+        <div class="trans-empty" id="trans-empty">
+          <div class="empty-icon">🎤</div>
+          <p>Press <strong>Start Transcription</strong> to begin capturing speech in real time</p>
+        </div>
+        <!-- Entries appear here -->
+        <div class="trans-interim-bar" id="trans-interim">
+          <span>✦</span>
+          <span id="interim-text">Listening…</span>
+        </div>
+      </div>
+
+      <div class="trans-footer">
+        <div class="no-support-msg" id="no-support">
+          ⚠️ Your browser doesn't support speech recognition. Try Chrome or Edge.
+        </div>
+
+        <select class="trans-lang-select" id="trans-lang" onchange="changeLang()">
+          <option value="en-US">🇺🇸 English (US)</option>
+          <option value="en-GB">🇬🇧 English (UK)</option>
+          <option value="es-ES">🇪🇸 Spanish</option>
+          <option value="fr-FR">🇫🇷 French</option>
+          <option value="de-DE">🇩🇪 German</option>
+          <option value="pt-BR">🇧🇷 Portuguese</option>
+          <option value="zh-CN">🇨🇳 Chinese</option>
+          <option value="ja-JP">🇯🇵 Japanese</option>
+          <option value="ar-SA">🇸🇦 Arabic</option>
+          <option value="hi-IN">🇮🇳 Hindi</option>
+        </select>
+
+        <button class="mic-btn start" id="mic-btn" onclick="toggleTranscription()">
+          🎤 Start Transcription
+        </button>
+
+        <div class="trans-actions">
+          <button class="trans-action-btn" onclick="copyTranscript()">📋 Copy All</button>
+          <button class="trans-action-btn" onclick="downloadTranscript()">⬇️ Download</button>
+          <button class="trans-action-btn" onclick="clearTranscript()">🗑️ Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 id="modal-title">Welcome back</h2>
+      <p id="modal-sub">Sign in to access your classes</p>
+      <div class="tab-switch">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Log In</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+      <div id="form-login">
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••" />
+        </div>
+        <button class="btn-primary" style="width:100%; margin-top:0.5rem; text-align:center;">Log In</button>
+        <p class="form-footer">Don't have an account? <a href="#" onclick="switchTab('signup'); return false;">Sign up
+            free</a></p>
+      </div>
+      <div id="form-signup" style="display:none;">
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Create a password" />
+        </div>
+        <div class="form-group">
+          <label>I want to</label>
+          <select>
+            <option>Learn (Student)</option>
+            <option>Teach (Instructor)</option>
+            <option>Both</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="width:100%; margin-top:0.5rem; text-align:center;">Create Account</button>
+        <p class="form-footer">Already have an account? <a href="#" onclick="switchTab('login'); return false;">Log
+            in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(tab) {
+      document.getElementById('modal').classList.add('open');
+      switchTab(tab || 'login');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    function switchTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tab-login').classList.toggle('active', isLogin);
+      document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+      document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('form-signup').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('modal-title').textContent = isLogin ? 'Welcome back' : 'Join Royalty';
+      document.getElementById('modal-sub').textContent = isLogin ? 'Sign in to access your classes' : 'Create your free account today';
+    }
+
+    function setFilter(el) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function toggleMenu() {
+      const links = document.querySelector('.nav-links');
+      if (links.style.display === 'flex') {
+        links.style.display = 'none';
+      } else {
+        links.style.cssText = 'display:flex; flex-direction:column; position:fixed; top:72px; left:0; right:0; background:#111118; padding:1.5rem 5%; border-bottom:1px solid var(--border); gap:1rem; z-index:99;';
+      }
+    }
+
+    // ── FIREBASE SETUP ──
+    // ⚠️ Replace these with your own Firebase project config from console.firebase.google.com
+    const FB_CONFIG = {
+      apiKey: "AIzaSyAlcf7Nzsxtn8xf1-4IjR_b3b0WL3mgoT0",
+      authDomain: "royalty-80ec2.firebaseapp.com",
+      projectId: "royalty-80ec2",
+      storageBucket: "royalty-80ec2.firebasestorage.app",
+      messagingSenderId: "961045202434",
+      appId: "1:961045202434:web:fbd4cc71a0ab2f103d491b",
+      measurementId:"G-CLVFT8DEGH"
+    };
+
+    let fbApp = null, fbDb = null, fbStrokesRef = null, fbUnsubscribe = null;
+    let currentClassId = null;
+
+    function initFirebase() {
+      if (fbApp) return true;
+      try {
+        // Use Firebase compat SDK loaded via CDN
+        if (typeof firebase === 'undefined') return false;
+        if (!firebase.apps.length) fbApp = firebase.initializeApp(FB_CONFIG);
+        else fbApp = firebase.apps[0];
+        fbDb = firebase.database();
+        return true;
+      } catch (e) {
+        console.warn('Firebase init failed:', e);
+        return false;
+      }
+    }
+
+    // ── WHITEBOARD ──
+    let wbCanvas, wbCtx;
+    let wbDrawing = false;
+    let wbMode = 'draw';
+    let wbColor = '#f0eee8';
+    let wbSize = 2;
+    let wbHistory = [];
+    let wbTextPos = { x: 0, y: 0 };
+    let wbCurrentStroke = [];       // points in current stroke being drawn
+    let wbRemoteStrokes = new Set(); // IDs of strokes we've already drawn
+
+    function initWhiteboard() {
+      wbCanvas = document.getElementById('wb-canvas');
+      if (!wbCanvas || wbCanvas._init) return;
+      wbCanvas._init = true;
+      wbCtx = wbCanvas.getContext('2d');
+
+      const rect = wbCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      wbCanvas.width = rect.width * dpr;
+      wbCanvas.height = rect.height * dpr;
+      wbCtx.scale(dpr, dpr);
+      wbCtx.fillStyle = '#1a1a24';
+      wbCtx.fillRect(0, 0, rect.width, rect.height);
+
+      wbCanvas.addEventListener('mousedown', wbStart);
+      wbCanvas.addEventListener('mousemove', wbMove);
+      wbCanvas.addEventListener('mouseup', wbEnd);
+      wbCanvas.addEventListener('mouseleave', wbEnd);
+      wbCanvas.addEventListener('touchstart', e => { e.preventDefault(); wbStart(e.touches[0]); }, { passive: false });
+      wbCanvas.addEventListener('touchmove', e => { e.preventDefault(); wbMove(e.touches[0]); }, { passive: false });
+      wbCanvas.addEventListener('touchend', wbEnd);
+      wbCanvas.addEventListener('click', wbCanvasClick);
+
+      // Connect to Firebase for this class's whiteboard
+      connectWbFirebase();
+    }
+
+    function connectWbFirebase() {
+      if (!initFirebase() || !currentClassId) {
+        updateWbStatus('local');
+        return;
+      }
+      // Unsubscribe from previous room if any
+      if (fbStrokesRef && fbUnsubscribe) {
+        fbStrokesRef.off('child_added', fbUnsubscribe);
+      }
+      fbStrokesRef = fbDb.ref(`whiteboards/${currentClassId}/strokes`);
+      updateWbStatus('connected');
+
+      // Listen for new strokes from other users
+      fbUnsubscribe = fbStrokesRef.on('child_added', snapshot => {
+        const id = snapshot.key;
+        if (wbRemoteStrokes.has(id)) return; // skip our own strokes
+        wbRemoteStrokes.add(id);
+        const stroke = snapshot.val();
+        drawRemoteStroke(stroke);
+      });
+
+      // Load existing strokes on join
+      fbStrokesRef.once('value', snap => {
+        snap.forEach(child => wbRemoteStrokes.add(child.key));
+      });
+    }
+
+    function drawRemoteStroke(stroke) {
+      if (!wbCtx || !stroke.points || stroke.points.length < 2) return;
+      const rect = wbCanvas.getBoundingClientRect();
+      wbCtx.beginPath();
+      wbCtx.strokeStyle = stroke.color;
+      wbCtx.lineWidth = stroke.size;
+      wbCtx.lineCap = 'round';
+      wbCtx.lineJoin = 'round';
+      // Normalize coordinates to canvas size
+      stroke.points.forEach((p, i) => {
+        const x = p.x * rect.width;
+        const y = p.y * rect.height;
+        if (i === 0) wbCtx.moveTo(x, y);
+        else wbCtx.lineTo(x, y);
+      });
+      wbCtx.stroke();
+
+      if (stroke.type === 'text' && stroke.text) {
+        wbCtx.font = `${stroke.fontSize || 16}px 'DM Sans', sans-serif`;
+        wbCtx.fillStyle = stroke.color;
+        (stroke.text.split('\n')).forEach((line, i) => {
+          wbCtx.fillText(line, stroke.points[0].x * rect.width, stroke.points[0].y * rect.height + i * 22);
+        });
+      }
+    }
+
+    function pushStrokeToFirebase(stroke) {
+      if (!fbStrokesRef || !fbDb) return;
+      const ref = fbStrokesRef.push();
+      wbRemoteStrokes.add(ref.key); // mark as ours so we don't redraw
+      ref.set(stroke);
+    }
+
+    function updateWbStatus(state) {
+      const label = document.getElementById('wb-mode-label');
+      if (!label) return;
+      if (state === 'connected') {
+        label.innerHTML = 'Mode: Draw &nbsp;·&nbsp; <span style="color:#4ade80;">● Live sync ON</span>';
+      } else {
+        label.innerHTML = 'Mode: Draw &nbsp;·&nbsp; <span style="color:var(--ink-muted);">○ Local only (no Firebase config)</span>';
+      }
+    }
+
+    function wbPos(e) {
+      const rect = wbCanvas.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) / rect.width,   // normalized 0-1
+        y: (e.clientY - rect.top) / rect.height,
+        px: e.clientX - rect.left,                  // pixel coords for local draw
+        py: e.clientY - rect.top
+      };
+    }
+
+    function wbStart(e) {
+      if (wbMode === 'text') return;
+      wbDrawing = true;
+      wbSaveHistory();
+      wbCurrentStroke = [];
+      const p = wbPos(e);
+      wbCurrentStroke.push({ x: p.x, y: p.y });
+      wbCtx.beginPath();
+      wbCtx.moveTo(p.px, p.py);
+      wbCtx.strokeStyle = wbMode === 'erase' ? '#1a1a24' : wbColor;
+      wbCtx.lineWidth = wbMode === 'erase' ? wbSize * 6 : wbSize;
+      wbCtx.lineCap = 'round';
+      wbCtx.lineJoin = 'round';
+    }
+
+    function wbMove(e) {
+      if (!wbDrawing) return;
+      const p = wbPos(e);
+      wbCurrentStroke.push({ x: p.x, y: p.y });
+      wbCtx.lineTo(p.px, p.py);
+      wbCtx.stroke();
+    }
+
+    function wbEnd() {
+      if (!wbDrawing) return;
+      wbDrawing = false;
+      if (wbCurrentStroke.length > 1) {
+        pushStrokeToFirebase({
+          type: wbMode,
+          color: wbMode === 'erase' ? '#1a1a24' : wbColor,
+          size: wbMode === 'erase' ? wbSize * 6 : wbSize,
+          points: wbCurrentStroke,
+          ts: Date.now()
+        });
+      }
+      wbCurrentStroke = [];
+    }
+
+    function wbCanvasClick(e) {
+      if (wbMode !== 'text') return;
+      commitWbText();
+      const p = wbPos(e);
+      wbTextPos = p;
+      const wrap = document.getElementById('wb-text-input-wrap');
+      const input = document.getElementById('wb-text-input');
+      wrap.style.left = p.px + 'px';
+      wrap.style.top = (p.py - 14) + 'px';
+      wrap.classList.add('visible');
+      input.style.color = wbColor;
+      input.value = '';
+      input.focus();
+    }
+
+    function commitWbText() {
+      const input = document.getElementById('wb-text-input');
+      const wrap = document.getElementById('wb-text-input-wrap');
+      const txt = input.value.trim();
+      if (txt && wbCtx) {
+        wbSaveHistory();
+        wbCtx.font = `16px 'DM Sans', sans-serif`;
+        wbCtx.fillStyle = wbColor;
+        txt.split('\n').forEach((line, i) => {
+          wbCtx.fillText(line, wbTextPos.px, wbTextPos.py + i * 22);
+        });
+        pushStrokeToFirebase({
+          type: 'text',
+          text: txt,
+          color: wbColor,
+          size: 1,
+          fontSize: 16,
+          points: [{ x: wbTextPos.x, y: wbTextPos.y }],
+          ts: Date.now()
+        });
+      }
+      wrap.classList.remove('visible');
+      input.value = '';
+    }
+
+    function wbTextKeydown(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('wb-text-input-wrap').classList.remove('visible');
+        document.getElementById('wb-text-input').value = '';
+      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commitWbText(); }
+    }
+
+    function autoResizeWbText(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
+    function wbSaveHistory() {
+      if (!wbCtx) return;
+      wbHistory.push(wbCtx.getImageData(0, 0, wbCanvas.width, wbCanvas.height));
+      if (wbHistory.length > 30) wbHistory.shift();
+    }
+
+    function wbUndo() {
+      if (!wbCtx || !wbHistory.length) return;
+      wbCtx.putImageData(wbHistory.pop(), 0, 0);
+    }
+
+    function wbClear() {
+      if (!wbCtx) return;
+      if (!confirm('Clear the whiteboard for everyone?')) return;
+      wbSaveHistory();
+      const rect = wbCanvas.getBoundingClientRect();
+      wbCtx.fillStyle = '#1a1a24';
+      wbCtx.fillRect(0, 0, rect.width, rect.height);
+      // Also clear Firebase so all users see blank board
+      if (fbStrokesRef) {
+        fbStrokesRef.remove();
+        wbRemoteStrokes.clear();
+      }
+    }
+
+    function wbDownload() {
+      if (!wbCanvas) return;
+      const a = document.createElement('a');
+      a.download = 'royalty-whiteboard.png';
+      a.href = wbCanvas.toDataURL('image/png');
+      a.click();
+    }
+
+    function setWbMode(mode, btn) {
+      commitWbText();
+      wbMode = mode;
+      document.querySelectorAll('#wb-btn-draw, #wb-btn-text, #wb-btn-erase').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      wbCanvas.style.cursor = mode === 'text' ? 'text' : mode === 'erase' ? 'cell' : 'crosshair';
+    }
+
+    function setWbColor(color, el) {
+      wbColor = color;
+      document.querySelectorAll('.wb-color-swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      const input = document.getElementById('wb-text-input');
+      if (input) input.style.color = color;
+    }
+
+    function setWbSize(size, btn) {
+      wbSize = size;
+      document.querySelectorAll('.wb-size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Init whiteboard when tab is opened
+    function switchLessonTab(name, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.lesson-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('lt-' + name).classList.add('active');
+      btn.classList.add('active');
+      if (name === 'whiteboard') setTimeout(initWhiteboard, 50);
+    }
+
+    // ── LESSON PAGE ──
+    const CLASSES = {
+      'RYL-4821': { name: 'Watercolour Landscapes for Beginners', instructor: 'Elena Vasquez', live: true },
+      'RYL-2073': { name: 'Introduction to Machine Learning with Python', instructor: 'David Chen', live: false },
+      'RYL-6504': { name: 'Public Speaking: Command Any Room', instructor: 'James Owusu', live: true },
+      'RYL-3318': { name: 'Mindful Yoga for Modern Life', instructor: 'Priya Nair', live: false },
+      'RYL-9150': { name: 'Financial Freedom: Investing 101', instructor: 'Rachel Moore', live: false },
+      'RYL-7762': { name: 'Guitar from Scratch: Chords & Songs', instructor: 'Tom Hargreaves', live: true },
+    };
+
+    function openLessonPage(classId) {
+      classId = classId || 'RYL-4821';
+      const cls = CLASSES[classId];
+      if (!cls) { alert('Class not found. Check the ID and try again.'); return; }
+
+      document.getElementById('lesson-id-display').textContent = classId;
+      document.getElementById('lesson-nav-title').textContent = cls.name;
+      currentClassId = classId;
+      document.getElementById('lesson-page').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+
+      // Build Jitsi room name from class ID — unique, stable room per class
+      const roomName = 'Royalty-' + classId.replace('RYL-', '');
+      const displayName = 'Student'; // could be replaced with logged-in user's name
+      const jitsiUrl = `https://meet.jit.si/${roomName}#userInfo.displayName="${encodeURIComponent(displayName)}"&config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false&interfaceConfig.SHOW_JITSI_WATERMARK=false&interfaceConfig.TOOLBAR_BUTTONS=["microphone","camera","closedcaptions","desktop","fullscreen","hangup","chat","raisehand","tileview","select-background"]`;
+
+      const frame = document.getElementById('jitsi-frame');
+      const placeholder = document.getElementById('jitsi-placeholder');
+
+      placeholder.style.display = 'flex';
+      frame.style.display = 'none';
+      frame.src = jitsiUrl;
+
+      frame.onload = () => {
+        placeholder.style.display = 'none';
+        frame.style.display = 'block';
+      };
+    }
+
+    function joinByCode() {
+      const raw = document.getElementById('join-code-input').value.trim().toUpperCase();
+      if (!raw) { alert('Please enter a Class ID.'); return; }
+      const id = raw.startsWith('RYL-') ? raw : 'RYL-' + raw;
+      if (!CLASSES[id]) {
+        alert('No class found with ID "' + id + '".\nCheck the code and try again.');
+        return;
+      }
+      document.getElementById('join-code-input').value = '';
+      openLessonPage(id);
+    }
+
+    function copyClassId(id, e) {
+      if (e) e.stopPropagation();
+      navigator.clipboard.writeText(id).then(() => {
+        const btn = e && e.target;
+        if (btn) { const orig = btn.textContent; btn.textContent = '✓'; setTimeout(() => btn.textContent = orig, 1200); }
+      });
+    }
+
+    function shareClassId() {
+      const id = document.getElementById('lesson-id-display').textContent;
+      const cls = CLASSES[id];
+      const text = `Join my Royalty class "${cls ? cls.name : ''}" with Class ID: ${id}`;
+      if (navigator.share) {
+        navigator.share({ title: 'Join my Royalty class', text });
+      } else {
+        navigator.clipboard.writeText(text).then(() => alert('Class info copied to clipboard!\n\n' + text));
+      }
+    }
+
+    function closeLessonPage() {
+      stopTranscription();
+      // Unload Jitsi to stop camera & mic
+      const frame = document.getElementById('jitsi-frame');
+      if (frame) { frame.src = ''; frame.style.display = 'none'; }
+      document.getElementById('jitsi-placeholder').style.display = 'flex';
+      document.getElementById('lesson-page').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // ── SPEECH TO TEXT ──
+    let recognition = null;
+    let isListening = false;
+    let transcriptEntries = [];
+    let sessionStart = null;
+
+    function initRecognition() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        document.getElementById('no-support').style.display = 'block';
+        document.getElementById('mic-btn').disabled = true;
+        return null;
+      }
+      const r = new SR();
+      r.continuous = true;
+      r.interimResults = true;
+      r.lang = document.getElementById('trans-lang').value;
+
+      r.onstart = () => {
+        setStatus('listening', 'Listening…');
+        document.getElementById('trans-interim').style.display = 'flex';
+      };
+
+      r.onresult = (e) => {
+        let interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) {
+            addEntry(t.trim());
+          } else {
+            interim += t;
+          }
+        }
+        document.getElementById('interim-text').textContent = interim || 'Listening…';
+        setStatus('listening', 'Listening…');
+      };
+
+      r.onerror = (e) => {
+        if (e.error === 'no-speech') return;
+        setStatus('idle', 'Error');
+        isListening = false;
+        updateMicBtn();
+      };
+
+      r.onend = () => {
+        document.getElementById('trans-interim').style.display = 'none';
+        if (isListening) {
+          // Auto restart
+          try { r.start(); } catch (err) { }
+        } else {
+          setStatus('idle', 'Idle');
+          updateMicBtn();
+        }
+      };
+
+      return r;
+    }
+
+    function toggleTranscription() {
+      if (isListening) {
+        stopTranscription();
+      } else {
+        startTranscription();
+      }
+    }
+
+    function startTranscription() {
+      if (!recognition) recognition = initRecognition();
+      if (!recognition) return;
+      recognition.lang = document.getElementById('trans-lang').value;
+      isListening = true;
+      sessionStart = new Date();
+      document.getElementById('trans-empty').style.display = 'none';
+      setStatus('processing', 'Starting…');
+      updateMicBtn();
+      try { recognition.start(); } catch (e) { }
+    }
+
+    function stopTranscription() {
+      if (!recognition) return;
+      isListening = false;
+      try { recognition.stop(); } catch (e) { }
+      document.getElementById('trans-interim').style.display = 'none';
+      setStatus('idle', 'Idle');
+      updateMicBtn();
+    }
+
+    function addEntry(text) {
+      if (!text) return;
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      transcriptEntries.push({ time: timeStr, text });
+
+      const body = document.getElementById('trans-body');
+      const interimBar = document.getElementById('trans-interim');
+
+      const div = document.createElement('div');
+      div.className = 'trans-entry';
+      div.innerHTML = `<div class="trans-time">${timeStr}</div><div class="trans-text">${text}</div>`;
+      body.insertBefore(div, interimBar);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function setStatus(type, label) {
+      const el = document.getElementById('trans-status');
+      const dot = document.getElementById('status-dot');
+      const txt = document.getElementById('status-text');
+      el.className = 'trans-status ' + type;
+      dot.className = 'status-dot' + (type === 'listening' ? ' pulse' : '');
+      txt.textContent = label;
+    }
+
+    function updateMicBtn() {
+      const btn = document.getElementById('mic-btn');
+      if (isListening) {
+        btn.className = 'mic-btn stop';
+        btn.innerHTML = '⏹ Stop Transcription';
+      } else {
+        btn.className = 'mic-btn start';
+        btn.innerHTML = '🎤 Start Transcription';
+      }
+    }
+
+    function changeLang() {
+      if (isListening && recognition) {
+        stopTranscription();
+        setTimeout(startTranscription, 300);
+      }
+    }
+
+    function copyTranscript() {
+      const text = transcriptEntries.map(e => `[${e.time}] ${e.text}`).join('\n');
+      if (!text) return alert('No transcript yet.');
+      navigator.clipboard.writeText(text).then(() => alert('Transcript copied!'));
+    }
+
+    function downloadTranscript() {
+      if (!transcriptEntries.length) return alert('No transcript yet.');
+      const text = transcriptEntries.map(e => `[${e.time}] ${e.text}`).join('\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'royalty-transcript.txt';
+      a.click();
+    }
+
+    function clearTranscript() {
+      if (!transcriptEntries.length) return;
+      if (!confirm('Clear all transcription entries?')) return;
+      transcriptEntries = [];
+      const body = document.getElementById('trans-body');
+      body.querySelectorAll('.trans-entry').forEach(el => el.remove());
+      document.getElementById('trans-empty').style.display = 'flex';
+    }
+
+    function copyNotes() {
+      const notes = document.getElementById('student-notes').value;
+      if (!notes) return alert('No notes to copy.');
+      navigator.clipboard.writeText(notes).then(() => alert('Notes copied!'));
+    }
+
+    // Smooth reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.class-card, .step, .testimonial-card, .pricing-card, .teach-feature').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+
+</html>
